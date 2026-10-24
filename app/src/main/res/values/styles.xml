@@ -1,0 +1,9 @@
+<resources>
+    <style name="ServiceTheme" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#66E2C1</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">#0C121B</item>
+        <item name="android:colorBackground">#0C121B</item>
+    </style>
+</resources>
