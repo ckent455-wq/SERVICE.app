@@ -5,6 +5,7 @@ import org.json.*;
 
 final class Store {
     static final String ANSWERING_SERVICE = "8333550861";
+    static String source(Context c) { return prefs(c).getString("serviceSource",ANSWERING_SERVICE); }
     static synchronized android.content.SharedPreferences prefs(Context c) {
         android.content.SharedPreferences p=c.getSharedPreferences("relay", Context.MODE_PRIVATE);
         if(!p.getBoolean("departmentsConfigured",false)) {

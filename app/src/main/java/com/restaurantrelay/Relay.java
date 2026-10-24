@@ -10,7 +10,7 @@ import org.json.*;
 final class Relay {
     static void process(Context c, String sender, String body, long timestamp, int subscription) {
         var p=Store.prefs(c);
-        if(!p.getBoolean("enabled",false) || !Rules.samePhone(sender,Store.ANSWERING_SERVICE)) return;
+        if(!p.getBoolean("enabled",false) || !Rules.samePhone(sender,Store.source(c))) return;
         String id=UUID.nameUUIDFromBytes((Rules.phone(sender)+"|"+timestamp+"|"+body).getBytes(java.nio.charset.StandardCharsets.UTF_8)).toString();
         if(Store.find(c,id)!=null) return;
         JSONObject row=new JSONObject();

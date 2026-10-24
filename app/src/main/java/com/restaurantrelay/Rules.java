@@ -4,6 +4,10 @@ import java.util.regex.*;
 
 public final class Rules {
     private Rules() {}
+    public static boolean canEnable(String source, String brink, String aloha) {
+        return validPhone(source) && ((validPhone(brink) && !samePhone(source,brink))
+                || (validPhone(aloha) && !samePhone(source,aloha)));
+    }
     public static String department(String body) {
         return Pattern.compile("(?im)^\\h*SLIM\\h+CHICKENS\\b[^\\r\\n]*$").matcher(body).find() ? "BRINK" : "ALOHA";
     }
