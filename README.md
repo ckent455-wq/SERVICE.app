@@ -5,7 +5,7 @@ Android call handoff for restaurant service teams. Automatically acknowledge ans
 ## Routing
 
 - Answering service: **(833) 355-0861** by default. In Settings, change it to a test sender or restore the default. Changing or restoring the source pauses routing. Reply codes go back to the configured sender.
-- **BRINK:** a header line beginning with **SLIM CHICKENS**, ignoring case and extra spaces; store suffixes are allowed.
+- **BRINK:** a header line beginning with **SLIM CHICKENS**, or **Powersoul Cafe** with **Las Vegas** in the message. Matching ignores case and extra spaces; Power Soul and Café spelling are supported. Store suffixes are allowed. Powersoul messages without Las Vegas continue to use ALOHA.
 - **ALOHA:** all other restaurant calls.
 - Each department has an independently editable on-call number.
 - The number on the standalone **Reply with** line is sent back to the answering service. The complete original message is then submitted to the selected department.

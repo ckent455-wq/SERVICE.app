@@ -2,7 +2,7 @@ plugins { id 'com.android.application' }
 android {
     namespace 'com.restaurantrelay'
     compileSdk 35
-    defaultConfig { applicationId 'com.restaurantrelay'; minSdk 26; targetSdk 35; versionCode 7; versionName '1.0.2' }
+    defaultConfig { applicationId 'com.restaurantrelay'; minSdk 26; targetSdk 35; versionCode 8; versionName '1.0.3' }
     signingConfigs {
         release {
             if (System.getenv('SERVICE_SIGNING_STORE')) {

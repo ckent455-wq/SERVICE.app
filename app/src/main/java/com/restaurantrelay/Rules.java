@@ -9,7 +9,10 @@ public final class Rules {
                 || (validPhone(aloha) && !samePhone(source,aloha)));
     }
     public static String department(String body) {
-        return Pattern.compile("(?im)^\\h*SLIM\\h+CHICKENS\\b[^\\r\\n]*$").matcher(body).find() ? "BRINK" : "ALOHA";
+        boolean slimChickens = Pattern.compile("(?im)^\\h*SLIM\\h+CHICKENS\\b[^\\r\\n]*$").matcher(body).find();
+        boolean powersoulCafe = Pattern.compile("(?imu)^\\h*POWER\\h*SOUL\\h+CAF[EÉ]\\b[^\\r\\n]*$").matcher(body).find();
+        boolean lasVegas = Pattern.compile("(?i)\\bLAS\\s+VEGAS\\b").matcher(body).find();
+        return slimChickens || (powersoulCafe && lasVegas) ? "BRINK" : "ALOHA";
     }
     public static String destinationKey(String body) { return department(body).equals("BRINK") ? "brink" : "aloha"; }
     public static String phone(String input) {
