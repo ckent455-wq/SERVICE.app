@@ -5,7 +5,7 @@ Android call handoff for restaurant service teams. Automatically acknowledge ans
 ## Routing
 
 - Answering service: **(833) 355-0861** by default. In Settings, change it to a test sender or restore the default. Changing or restoring the source pauses routing. Reply codes go back to the configured sender.
-- **BRINK:** a header line beginning with **SLIM CHICKENS**, or **Powersoul Cafe** with **Las Vegas** in the message. Matching ignores case and extra spaces; Power Soul and Café spelling are supported. Store suffixes are allowed. Powersoul messages without Las Vegas continue to use ALOHA.
+- **BRINK:** a restaurant header with **Slim Chickens** or a close spelling variation (such as Slims Chickens, Slimm Chicken, or Slim Chiken), or **Powersoul Cafe** with **Las Vegas** in the message. Matching ignores case and extra spaces; Power Soul and Café spelling are supported. Store suffixes are allowed. Powersoul messages without Las Vegas continue to use ALOHA.
 - **ALOHA:** all other restaurant calls.
 - Each department has an independently editable on-call number.
 - The number on the standalone **Reply with** line is sent back to the answering service. The complete original message is then submitted to the selected department.
@@ -69,3 +69,7 @@ No cloud service, account, advertising, analytics, or Internet permission. Depar
 - [Google Play SMS permission policy](https://support.google.com/googleplay/android-developer/answer/10208820)
 
 Calls for an unconfigured department are recorded and flagged for attention. They are neither acknowledged nor forwarded, and never fall back to the other department.
+
+Slim Chickens matching allows one character edit in Slim and up to two in Chicken/Chickens when it starts with C (one otherwise), including adjacent swapped letters. Punctuation and capitalization are ignored. Matching applies to the first two words of a line; arbitrary typos are not guaranteed. Preview unfamiliar spellings before relying on a route.
+
+Slim Pickens is also an explicitly configured BRINK header alias.
