@@ -2,6 +2,7 @@ package com.restaurantrelay;
 import android.Manifest;
 import android.app.*;
 import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.*;
@@ -12,8 +13,8 @@ import org.json.*;
 
 public final class MainActivity extends Activity {
  final int BG=0xff0c121b,CARD=0xff172230,INK=0xfff2f6fb,MUTED=0xff99aabe,TEAL=0xff66e2c1;
- LinearLayout content; int page=0;
- @Override public void onCreate(Bundle b){super.onCreate(b);if(b!=null)page=b.getInt("page",0);show();}
+ LinearLayout content; int page=0; AppUpdater updater;
+ @Override public void onCreate(Bundle b){super.onCreate(b);updater=new AppUpdater(this,this::show);if(b!=null)page=b.getInt("page",0);show();}
  @Override public void onResume(){super.onResume();show();}
  @Override public void onSaveInstanceState(Bundle b){super.onSaveInstanceState(b);b.putInt("page",page);}
  int dp(float n){return Math.round(n*getResources().getDisplayMetrics().density);}
@@ -49,11 +50,14 @@ public final class MainActivity extends Activity {
  int statusColor(String s){return s.startsWith("Sent")?TEAL:s.startsWith("Failed")?0xffffa2a2:0xffffcc80;}
  void settings(){
   text(content,"Settings",27,INK,true);gap(content,6);text(content,"Keep your handoff details up to date.",14,MUTED,false);gap(content,24);
+  updateCard();
   departmentCard("BRINK","brink","Slim Chickens + Powersoul Cafe (Las Vegas)"); departmentCard("ALOHA","aloha","All other restaurant calls"); LinearLayout c;
   c=card();text(c,"Answering service",18,INK,true);gap(c,6);text(c,number("source"),20,INK,false);gap(c,6);text(c,"Only texts from this number trigger a handoff.",13,MUTED,false);button(c,"Change service number",false,()->editNumber("serviceSource"));button(c,"Restore (833) 355-0861",false,()->{Store.prefs(this).edit().putString("serviceSource",Store.ANSWERING_SERVICE).putBoolean("enabled",false).commit();show();});if(!Rules.samePhone(Store.source(this),Store.ANSWERING_SERVICE)){gap(c,8);text(c,"TEST SENDER ACTIVE",12,0xffffcc80,true);}
   c=card();text(c,"Phone permissions",18,INK,true);gap(c,8);text(c,smsGranted()?"SMS access granted":"SMS access required",14,smsGranted()?TEAL:0xffffcc80,false);if(Build.VERSION.SDK_INT>=33){gap(c,5);text(c,checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)==PackageManager.PERMISSION_GRANTED?"Failure notifications allowed":"Allow notifications for failure alerts",13,MUTED,false);}button(c,"Manage permissions",false,this::permissions);
-  c=card();text(c,"Try a sample",18,INK,true);gap(c,8);text(c,"Preview a handoff without sending a text.",14,MUTED,false);button(c,"Open test preview",true,this::preview);text(content,"SERVICE.app / 1.0.4",12,MUTED,false);
+  c=card();text(c,"Try a sample",18,INK,true);gap(c,8);text(c,"Preview a handoff without sending a text.",14,MUTED,false);button(c,"Open test preview",true,this::preview);text(content,"SERVICE.app / "+updater.installedVersion(),12,MUTED,false);
  }
+ void updateCard(){LinearLayout c=card();text(c,"App updates",20,INK,true);gap(c,6);text(c,"Installed version "+updater.installedVersion(),14,TEAL,false);gap(c,8);text(c,updater.status(),14,MUTED,false);button(c,"Check for updates",true,updater::check);if(updater.hasPreparedUpdate())button(c,"Install downloaded update",false,updater::install);gap(c,8);text(c,"Updates keep your settings. Android asks you to approve installation.",12,MUTED,false);}
+ @Override protected void onActivityResult(int request,int result,Intent data){super.onActivityResult(request,result,data);if(request==AppUpdater.INSTALL_PERMISSION)updater.returnedFromPermission();}
  void editNumber(String key){var p=Store.prefs(this);LinearLayout wrap=col();wrap.setPadding(dp(24),dp(8),dp(24),0);EditText f=new EditText(this);f.setText(key.equals("serviceSource")?Store.source(this):p.getString(key,""));f.setHint("(555) 123-4567");f.setInputType(InputType.TYPE_CLASS_PHONE);f.setSingleLine();wrap.addView(f);AlertDialog d=new AlertDialog.Builder(this).setTitle(key.equals("serviceSource")?"Answering service / test sender":key.equals("brink")?"BRINK on-call technician":"ALOHA on-call technician").setMessage(key.equals("serviceSource")?"Only texts from this number trigger routing. Reply codes are sent back here. Saving pauses routing.":"Calls for this department forward here after saving.").setView(wrap).setPositiveButton("Save number",null).setNegativeButton("Cancel",null).create();d.setOnShowListener(x->d.getButton(-1).setOnClickListener(v->{String n=f.getText().toString();if(!Rules.validPhone(n)){f.setError("Enter a US phone number with area code");return;}if(key.equals("serviceSource")?(Rules.samePhone(n,p.getString("brink",""))||Rules.samePhone(n,p.getString("aloha",""))):Rules.samePhone(n,Store.source(this))){f.setError("Use two different numbers");return;}android.content.SharedPreferences.Editor editor=p.edit().putString(key,n);if(key.equals("serviceSource"))editor.putBoolean("enabled",false);editor.commit();d.dismiss();show();}));d.show();}
  void departmentCard(String title,String key,String description){LinearLayout c=card();text(c,title+" ON CALL",12,TEAL,true).setLetterSpacing(.1f);gap(c,10);text(c,number(key),26,INK,true);gap(c,6);text(c,description,14,MUTED,false);if(!Rules.validPhone(Store.prefs(this).getString(key,""))){gap(c,8);text(c,"Not routed until a number is set. Calls are flagged for attention.",12,0xffffcc80,false);}button(c,"Change "+title+" number",true,()->editNumber(key));}
  void permissions(){requestPermissions(Build.VERSION.SDK_INT>=33?new String[]{Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS,Manifest.permission.POST_NOTIFICATIONS}:new String[]{Manifest.permission.RECEIVE_SMS,Manifest.permission.SEND_SMS},10);}

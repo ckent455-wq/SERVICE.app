@@ -60,7 +60,7 @@ For a signed release, set `SERVICE_SIGNING_STORE` to an absolute keystore path a
 
 ## Data
 
-No cloud service, account, advertising, analytics, or Internet permission. Department numbers and the latest 100 call records are stored in app-private local storage. Android cloud backup is disabled. There is no export/delete-history UI. SMS sending uses the phone's cellular plan.
+No account, advertising, analytics, or cloud call storage. The optional updater contacts GitHub over HTTPS when you check for or download updates. Call texts and on-call numbers are never sent to GitHub. Department numbers and the latest 100 call records are stored in app-private local storage. Android cloud backup is disabled. There is no export/delete-history UI. SMS sending uses the phone's cellular plan.
 
 ## Android references
 
@@ -73,3 +73,11 @@ Calls for an unconfigured department are recorded and flagged for attention. The
 Slim Chickens matching allows one character edit in Slim and up to two in Chicken/Chickens when it starts with C (one otherwise), including adjacent swapped letters. Punctuation and capitalization are ignored. Matching applies to the first two words of a line; arbitrary typos are not guaranteed. Preview unfamiliar spellings before relying on a route.
 
 Slim Pickens is also an explicitly configured BRINK header alias.
+
+## In-app updates (v1.0.5 and newer)
+
+Install v1.0.5 from GitHub once to add the updater. Then use Settings > App updates > Check for updates. The app checks the latest stable release in this repository and, after your confirmation, downloads the signed APK, verifies its SHA-256 checksum, package name, higher version code, expected version name, and matching signing certificate. Android asks you to approve installation. On first use, allow SERVICE.app to install from this source and return to the app. If you cancel installation, use Install downloaded update to try again. Settings and history are preserved when updating; do not uninstall.
+
+Checks and downloads run only when requested; there is no scheduled polling or silent installation. Network errors, missing assets, tampered downloads, mismatched signing keys, and downgrades do not replace the installed app. Interrupted downloads can be retried. Pending update downloads live in the private cache; if Android clears that cache, download again.
+
+Future releases must use a stable vMAJOR.MINOR.PATCH tag, increasing Android versionCode, an asset named SERVICE.app-vMAJOR.MINOR.PATCH.apk, and the same signing key. Provide a GitHub SHA-256 asset digest or SHA256SUMS.txt containing the exact APK filename. Publish a release only after its assets are uploaded. This updater is for the direct-distribution app, not a Google Play update mechanism.
